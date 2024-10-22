@@ -1,44 +1,50 @@
 # Classe Aluno, deve solicitar o RA e Senha caso esteja na localização permitida
-from validacao_geografica import ValidacaoGeografica
+from validacao_geografica import (
+    LocalizacaoAluno,
+    DistanciaAutorizada,
+)
 
 
 class Aluno:
-    def __init__(self, ra, senha):
-        self.ra = ra
-        self._senha = senha  # Senha como atributo privado
+    def __init__(
+        self,
+        ra: int,
+        senha: str,
+        nome: str,
+        curso: str,
+        periodo: str,
+        semestre: int,
+        modulo: int,
+    ):
+        self.__ra = ra
+        self.__senha = senha
+        self.nome = nome
+        self.curso = curso
+        self.periodo = periodo
+        self.semestre = semestre
+        self.modulo = modulo
 
-    def validar_ra_e_senha(self, ra_digitado, senha_digitada):
-        return self.ra == ra_digitado and self._senha == senha_digitada
+    @property
+    def ra(self):
+        return self.__ra
+
+    @property
+    def senha(self):
+        return self.__senha
+
+    # Isso seria viável? a senha deveria vir encriptografada, certo? como?
+    # a lógica de colocar isso foi para conseguir verificar com a senha digitada depois
+    # e permitir, assim, o acesso
 
 
-class LocalAluno(ValidacaoGeografica):
-    def __init__(self, latitude, longitude, ra, senha):
-        super().__init__(latitude, longitude)  # inicializa a classe ValidacaoGeografica
-        self.aluno = Aluno(ra, senha)
-
-    def verificar_acesso(self, latitude_permitida, longitute_permitida, raio_permitido):
-        # Verifica se está na localização permitida
-        if self.esta_dentro_do_raio(
-            latitude_permitida, longitute_permitida, raio_permitido
-        ):
-            # se estivwer na área permitida, solicita RA e senha
-            ra_inserido = input("Digite seu RA:")
-            senha_inserida = input("Digite sua senha: ")
-            if self.aluno.validar_ra_e_senha(ra_inserido, senha_inserida):
-                print("Acesso concedido!")
-            else:
-                print("RA ou Senha incorretos. Tente novamente.")
+class ValidarLocal:
+    def __init__(self, localizacao_aluno: LocalizacaoAluno, nome_campus: str):
+        distancia = DistanciaAutorizada(localizacao_aluno, nome_campus)
+        if distancia.local_autorizado():
+            print(
+                "Você se encontra próximo a sua sala de aula! Pode ir para o login do aplicativo."
+            )
         else:
-            print("Você não está localizado na área permitida.")
-
-
-# Exemplo de uso, criando o objeto (no caso, um aluno e seu local)
-local_aluno = LocalAluno(-21.9700, -46.7700, "123456", "minha_senha")
-
-# Coordenadas permitidas são as coordenadas do polo mantiqueira da UNIFEOB, e raio permitido de 1km
-latitude_permitida = -21.966469960170866
-longitute_permitida = -46.77255352511558
-raio_permitido_km = 1
-
-# Verificando se o aluno pode acessar o sistema
-local_aluno.verificar_acesso(latitude_permitida, longitute_permitida, raio_permitido_km)
+            print(
+                "Você não se encontra próximo a sua sala de sua aula. Acesso ao aplicativo negado!"
+            )
