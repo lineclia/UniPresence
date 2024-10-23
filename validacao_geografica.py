@@ -1,58 +1,41 @@
-import math
+from geopy.distance import geodesic
+# Nominatin é um serviço de geolocalização, como o Google Maps
 
-#Nesse primeiro momento o código irá verificar apenas a localização do Campus Mantiqueira
-#Coordenadas do polo: -21.966469960170866, -46.77255352511558
 
-class ValidacaoGeografica:
-    def __init__(self, latitude, longitude):
-        self.latitude = latitude
-        self.longitude = longitude
+class LocalizacaoCampus:
+    def __init__(self):
+        self.__campus_mantiqueira_coords = (-21.966571251651015, -46.77271231380196)
+        self.__campus_fazenda_coords = (-21.959124918142102, -46.75541626064883)
+        self.__palmeiras_coords = (-21.973273070543343, -46.79749880108253)
 
-    # Método para validar se a localização atual está dentro do raio permitido
-    def esta_dentro_do_raio(self, latitude_permitida, longitude_permitida, raio_km):
-        # Cálculo da distância usando Haversine
-        distancia = self.calcular_distancia(latitude_permitida, longitude_permitida)
-        return distancia <= raio_km
+    def get_campus(self, nome):
+        if nome == "mantiqueira":
+            return self.__campus_mantiqueira_coords
+        elif nome == "fazenda":
+            return self.__campus_fazenda_coords
+        elif nome == "palmeiras":
+            return self.__palmeiras_coords
+        else:
+            raise ValueError("Campus não encontrado")
 
-    # Método para calcular a distância entre dois pontos geográficos
-    def calcular_distancia(self, outra_latitude, outra_longitude):
-        # Conversão de graus para radianos
-        lat1, lon1 = math.radians(self.latitude), math.radians(self.longitude)
-        lat2, lon2 = math.radians(outra_latitude), math.radians(outra_longitude)
 
-        # Fórmula de Haversine
-        dlat = lat2 - lat1
-        dlon = lon2 - lon1
-        a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
-        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+class LocalizacaoAluno:
+    def __init__(self, latitude: float, longitude: float):
+        self.__latitude = latitude
+        self.__longitude = longitude
 
-        # Raio da Terra em km
-        raio_terra_km = 6371
-        distancia = raio_terra_km * c
-        return distancia
+    def get_coordenadas(self):
+        return (self.__latitude, self.__longitude)
 
-# Exemplo de uso
-# Coordenadas da localização do usuário (exemplo)
-localizacao_usuario = ValidacaoGeografica(-21.9700, -46.7700) 
-# Exemplo de coordenadas do usuário
-#esse dado teria de vir da utilização do GPS pelo dispositivo do aluno/professor
 
-# Coordenadas permitidas do polo mantiqueira
-coordenadas_permitidas = [
-    (-21.966469960170866, -46.77255352511558)  
-]
+class DistanciaAutorizada:
+    def __init__(self, localizacao_aluno: LocalizacaoAluno, nome_campus: str):
+        self.localizacao_aluno = localizacao_aluno
+        self.campus = LocalizacaoCampus().get_campus(nome_campus)
 
-# Raio permitido de 1 km
-raio_permitido_km = 1
-
-# Verificar se o usuário está dentro da coordenada permitida
-acesso_liberado = False
-for coord in coordenadas_permitidas:
-    if localizacao_usuario.esta_dentro_do_raio(coord[0], coord[1], raio_permitido_km):
-        acesso_liberado = True
-        break
-
-if acesso_liberado:
-    print("Acesso permitido.")
-else:
-    print("Acesso negado.")
+    def local_autorizado(self):
+        raio_permitido = 0.05  # 50 metros em quilômetros
+        coordenadas_aluno = self.localizacao_aluno.get_coordenadas()
+        distancia = geodesic(coordenadas_aluno, self.campus).km
+        return distancia <= raio_permitido
+        # TODO: porque não foi usado um else
