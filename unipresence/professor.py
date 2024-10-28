@@ -1,6 +1,6 @@
 # Classe professor, deve solicitar as credenciais (email institucional e senha) e fazer o login
 #
-from pessoa import Pessoa
+from unipresence.pessoa import Pessoa
 
 
 class Professor(Pessoa):

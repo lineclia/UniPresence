@@ -1,6 +1,6 @@
 # Classe Aluno, deve solicitar o RA e Senha caso esteja na localização permitida
-from pessoa import Pessoa
-from validacao_geografica import (
+from unipresence.pessoa import Pessoa
+from unipresence.validacao_geografica import (
     LocalizacaoAluno,
     DistanciaAutorizada,
 )
