@@ -3,15 +3,24 @@
 
 
 class Pessoa:
-    def __init__(self, ra: int, rm: int, senha: str, tipo: str):
+    def __init__(self, ra: int, rm: int, senha: str, tipo: str, nome: str):
         self._ra = ra
         # registro aluno
         self._rm = rm
         # registro matricula (professor)
         self._senha = senha
-        self.tipo = tipo
+        self._tipo = tipo
+        self._nome = nome
 
         # tipo: professor ou aluno
+
+    @property
+    def rm(self):
+        raise NotImplementedError()
+
+    @property
+    def ra(self):
+        raise ValueError("Professor não possui RA")
 
     def validacao_dados_login(self, ra=None, rm=None, senha=None):
         if self.tipo == "aluno" and ra == self._ra and senha == self._senha:
