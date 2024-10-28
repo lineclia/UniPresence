@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "unipresence"
+version = "0.1.0"
+description = ""
+authors = ["Lívia Menato <liviamenato@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+geopy = "^2.4.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
