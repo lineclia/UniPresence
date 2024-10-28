@@ -1,21 +1,17 @@
-#Classe professor, deve solicitar as credenciais (email institucional e senha) e fazer o login
-# 
-class Professor:
-    def __init__(self, email, senha):
-        self.email = email
-        self._senha = senha #Senha como atributo privado
+# Classe professor, deve solicitar as credenciais (registro de matrícula e senha) e fazer o login
+# nome, matricula, curso, turma, modulo
+from pessoa import Pessoa
 
-    def validar_email_e_senha(self, email_digitado, senha_digitado):
-        return self.email == email_digitado and self._senha == senha_digitado
 
-#Exemplo de uso, criando um objeto (no caso, um professor)
-professor1 = Professor("professor1@email.com", "minha_senha")
+class Professor(Pessoa):
+    def __init__(self, rm: int, nome: str, senha: str):
+        super().__init__(ra=None, rm=rm, senha=senha, tipo="professor")
+        self.nome = nome
 
-#Validando acesso
-email_inserido = input("Digite seu email institucional: ") 
-senha_inserida = input("Digite sua senha: ")
+    @property
+    def rm(self):
+        return self._rm
 
-if professor1.validar_email_e_senha(email_inserido,senha_inserida):
-    print("Acesso concedido!")
-else:
-    print("Email ou Senha incorretos. Tente novamente.")
+    @property
+    def senha(self):
+        return self._senha

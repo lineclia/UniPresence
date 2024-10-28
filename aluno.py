@@ -1,11 +1,15 @@
 # Classe Aluno, deve solicitar o RA e Senha caso esteja na localização permitida
+from pessoa import Pessoa
 from validacao_geografica import (
     LocalizacaoAluno,
     DistanciaAutorizada,
 )
 
+# classe Pessoa, com infos comuns entre o prof e aluno
+# usar ra para aluno e rm para professor, e senha
 
-class Aluno:
+
+class Aluno(Pessoa):
     def __init__(
         self,
         ra: int,
@@ -16,35 +20,27 @@ class Aluno:
         semestre: int,
         modulo: int,
     ):
-        self.__ra = ra
-        self.__senha = senha
+        super().__init__(ra=ra, rm=None, senha=senha, tipo="aluno")
         self.nome = nome
         self.curso = curso
         self.periodo = periodo
         self.semestre = semestre
         self.modulo = modulo
 
+    # TODO: Fazer API que vai ter os dados dos alunos (conferir se ta correto o pensamento)
+
     @property
     def ra(self):
-        return self.__ra
+        return self._ra
 
     @property
     def senha(self):
-        return self.__senha
-
-    # Isso seria viável? a senha deveria vir encriptografada, certo? como?
-    # a lógica de colocar isso foi para conseguir verificar com a senha digitada depois
-    # e permitir, assim, o acesso
+        return self._senha
 
 
 class ValidarLocal:
     def __init__(self, localizacao_aluno: LocalizacaoAluno, nome_campus: str):
-        distancia = DistanciaAutorizada(localizacao_aluno, nome_campus)
-        if distancia.local_autorizado():
-            print(
-                "Você se encontra próximo a sua sala de aula! Pode ir para o login do aplicativo."
-            )
-        else:
-            print(
-                "Você não se encontra próximo a sua sala de sua aula. Acesso ao aplicativo negado!"
-            )
+        self.distancia = DistanciaAutorizada(localizacao_aluno, nome_campus)
+
+    def local_autorizado(self):
+        return self.distancia.local_autorizado()
