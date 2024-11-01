@@ -32,3 +32,39 @@ class ValidarLocal:
 
     def local_autorizado(self):
         return self.distancia.local_autorizado()
+
+
+# criar as paginas do app do aluno e do professor
+# do professor: escolher a materia, o dia, gerar código
+# do aluno: inserir código, gerar QR Code, contabilizar presença
+# quando contabiliza presença, isso vai pra uma tabela que contem o nome do aluno, RA, a materia, o dia, o horario
+# que a presença foi contabilizada e se esteve presente ou não
+
+
+class MenuAluno:
+    def __init__(self, menu_aluno):
+        self._menu_aluno = menu_aluno
+
+        def menu_aluno(database):
+            while True:
+                print("\n--- Menu ---")
+                print("1. Faltas totais")
+                print("2. Grade horária")
+                print("3. Atividades Pendentes")
+                print("4. Escanear QR ")
+
+                choice = input("Escolha uma opção: ")
+
+                if choice == "1":
+                    title = input("Título: ")
+                    author = input("Autor: ")
+                    publication_year = int(input("Ano de publicação: "))
+                    database.insert_book(title, author, publication_year)
+                elif choice == "2":
+                    name = input("Nome: ")
+                    address = input("Endereço: ")
+                    phone = input("Telefone: ")
+                    database.insert_client(name, address, phone)
+
+                else:
+                    print("Opção inválida. Tente novamente.")
