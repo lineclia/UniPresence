@@ -10,32 +10,20 @@ from unipresence.validacao_geografica import (
 
 
 class Aluno(Pessoa):
-    def __init__(
-        self,
-        ra: int,
-        senha: str,
-        nome: str,
-        curso: str,
-        periodo: str,
-        semestre: int,
-        modulo: int,
-    ):
-        super().__init__(ra=ra, rm=None, senha=senha, tipo="aluno")
-        self.nome = nome
-        self.curso = curso
-        self.periodo = periodo
-        self.semestre = semestre
-        self.modulo = modulo
-
-    # TODO: Fazer API que vai ter os dados dos alunos (conferir se ta correto o pensamento)
+    def __init__(self, ra: int, senha_aluno: str, nome: str):
+        super().__init__(ra, None, senha_aluno, None, "aluno", nome)
 
     @property
     def ra(self):
         return self._ra
 
     @property
-    def senha(self):
-        return self._senha
+    def rm(self):
+        raise ValueError("Aluno não possui RM")
+
+    @property
+    def senha_aluno(self):
+        return self._senha_aluno
 
 
 class ValidarLocal:
