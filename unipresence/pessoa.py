@@ -1,52 +1,51 @@
 # TODO: acesso professor, acesso aluno, redefinicao de senha
 # usar isso pra depois chamar o acesso aluno em aluno.py e  o acesso professor em professor.py
 
+import mysql.connector
 from unipresence.validacao_geografica import LocalizacaoAluno, DistanciaAutorizada
 from unipresence.interfaces import PessoaInterface
+from unipresence.bd import ConectarBanco
 
 
-class Pessoa(PessoaInterface):
-    def __init__(
-        self, ra: int, rm: int, senha_aluno: str, senha_prof: str, tipo: str, nome: str
-    ):
-        self._ra = ra
-        # registro aluno
-        self._rm = rm
-        # registro matricula (professor)
-        self._senha_aluno = senha_aluno
-        self._senha_prof = senha_prof
+class Pessoa(ConectarBanco, PessoaInterface):
+    def __init__(self, tipo: str):
+        super().__init__()
         self._tipo = tipo
-        self._nome = nome
 
-        # tipo: professor ou aluno
+    def validacao_dados_login(self, ra=None, matricula=None, senha=None):
+        conn = self.conectar_banco()
+        try:
+            cursor = conn.cursor(dictionary=True)
 
-    @property
-    def rm(self):
-        raise NotImplementedError()
+            if self._tipo == "aluno":
+                # verifica na tabela aluno com o RA e senha
+                query_aluno = "SELECT * FROM aluno WHERE ra = %s AND senha = %s"
+                cursor.execute(query_aluno, (ra, senha))
+                aluno = cursor.fetchone()
+                return aluno is not None
+                # retorna True se o aluno existir
 
-    @property
-    def ra(self):
-        raise ValueError("Professor não possui RA")
+            elif self._tipo == "professor":
+                # verifica na tabela professor com matricula e senha
+                query_professor = (
+                    "SELECT * FROM professor WHERE matricula = %s AND senha = %s"
+                )
+                cursor.execute(query_professor, (matricula, senha))
+                professor = cursor.fetchone()
+                return professor is not None
 
-    def validacao_dados_login(
-        self, ra=None, rm=None, senha_aluno=None, senha_prof=None
-    ):
-        if (
-            self._tipo == "aluno"
-            and ra == self._ra
-            and senha_aluno == self._senha_aluno
-        ):
-            return True
-        elif (
-            self._tipo == "professor"
-            and rm == self._rm
-            and senha_prof == self._senha_prof
-        ):
-            return True
-        return False
+            return False
+        except mysql.connector.Error as err:
+            print(f"Erro: {err}")
+            return False
+        finally:
+            if conn:
+                conn.close()
 
     def login(self):
         tipo_digitado = str(input("Você é um Aluno ou Professor? ")).lower()
+
+        self._tipo = tipo_digitado
 
         if tipo_digitado == "aluno":
             # Solicitar coordenadas do aluno
@@ -61,9 +60,7 @@ class Pessoa(PessoaInterface):
             if validacao.local_autorizado():
                 ra_digitado = int(input("RA: "))
                 senha_digitada = input("Senha: ")
-                if self.validacao_dados_login(
-                    ra=ra_digitado, senha_aluno=senha_digitada
-                ):
+                if self.validacao_dados_login(ra=ra_digitado, senha=senha_digitada):
                     print("Acesso concedido.")
                 else:
                     print("Credenciais incorretas.")
@@ -73,9 +70,11 @@ class Pessoa(PessoaInterface):
                 )
 
         elif tipo_digitado == "professor":
-            rm_digitado = int(input("RM: "))
+            matricula_digitada = int(input("Matrícula: "))
             senha_digitada = input("Senha: ")
-            if self.validacao_dados_login(rm=rm_digitado, senha_prof=senha_digitada):
+            if self.validacao_dados_login(
+                matricula=matricula_digitada, senha=senha_digitada
+            ):
                 print("Acesso concedido.")
             else:
                 print("Credenciais incorretas.")

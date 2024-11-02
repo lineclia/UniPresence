@@ -5,25 +5,23 @@ from unipresence.validacao_geografica import (
     DistanciaAutorizada,
 )
 
-# classe Pessoa, com infos comuns entre o prof e aluno
-# usar ra para aluno e rm para professor, e senha
-
 
 class Aluno(Pessoa):
-    def __init__(self, ra: int, senha_aluno: str, nome: str):
-        super().__init__(ra, None, senha_aluno, None, "aluno", nome)
+    def __init__(self):
+        # self._ra = ra
+        super().__init__("aluno")
 
-    @property
-    def ra(self):
-        return self._ra
+    # @property
+    # def ra(self):
+    #     return self._ra
 
-    @property
-    def rm(self):
-        raise ValueError("Aluno não possui RM")
+    # @property
+    # def rm(self):
+    #     raise ValueError("Aluno não possui RM")
 
-    @property
-    def senha_aluno(self):
-        return self._senha_aluno
+    # @property
+    # def senha_aluno(self):
+    #     return self._senha_aluno
 
 
 class ValidarLocal:
@@ -44,27 +42,46 @@ class ValidarLocal:
 class MenuAluno:
     def __init__(self, menu_aluno):
         self._menu_aluno = menu_aluno
+        self.connection = self.connect_to_database()
 
-        def menu_aluno(database):
-            while True:
-                print("\n--- Menu ---")
-                print("1. Faltas totais")
-                print("2. Grade horária")
-                print("3. Atividades Pendentes")
-                print("4. Escanear QR ")
+    # def connect_to_database(self):
+    #     try:
+    #         connection = mysql.connector.connect(
+    #             host="172.17.0.2:3306",
+    #             user="root",
+    #             password="Litha003",
+    #             database="feob",
+    #         )
+    #         if connection.is_connected():
+    #             print("Conectado ao banco de dados")
+    #             return connection
+    #     except mysql.connector.Error as err:
+    #         print(f"Erro: {err}")
+    #         return None
 
-                choice = input("Escolha uma opção: ")
+    def menu_aluno(self):
+        while True:
+            print("\n--- Menu ---")
+            print("1. Faltas totais")
+            print("2. Grade horária")
+            print("3. Atividades Pendentes")
+            print("4. Escanear QR Code")
 
-                if choice == "1":
-                    title = input("Título: ")
-                    author = input("Autor: ")
-                    publication_year = int(input("Ano de publicação: "))
-                    database.insert_book(title, author, publication_year)
-                elif choice == "2":
-                    name = input("Nome: ")
-                    address = input("Endereço: ")
-                    phone = input("Telefone: ")
-                    database.insert_client(name, address, phone)
+            choice = input("Escolha uma opção: ")
 
-                else:
-                    print("Opção inválida. Tente novamente.")
+            if choice == "1":
+                self.faltas_totais()
+            elif choice == "2":
+                self.grade_horaria()
+
+            elif choice == "3":
+                self.atividades_pendentes()
+
+            elif choice == "4":
+                self.escanear_qr_code
+
+            elif choice == "5":
+                break
+
+            else:
+                print("Opção inválida. Tente novamente.")
