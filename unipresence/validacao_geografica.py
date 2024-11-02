@@ -34,7 +34,7 @@ class DistanciaAutorizada:
         self.campus = LocalizacaoCampus().get_campus(nome_campus)
 
     def local_autorizado(self):
-        raio_permitido = 0.5  # 50 metros em quilômetros
+        raio_permitido = 0.3  # 50 metros em quilômetros
         coordenadas_aluno = self.localizacao_aluno.get_coordenadas()
         distancia = geodesic(coordenadas_aluno, self.campus).km
         return distancia <= raio_permitido

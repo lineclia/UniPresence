@@ -44,7 +44,6 @@ class Pessoa(ConectarBanco, PessoaInterface):
 
     def login(self):
         tipo_digitado = str(input("Você é um Aluno ou Professor? ")).lower()
-
         self._tipo = tipo_digitado
 
         if tipo_digitado == "aluno":
@@ -62,6 +61,10 @@ class Pessoa(ConectarBanco, PessoaInterface):
                 senha_digitada = input("Senha: ")
                 if self.validacao_dados_login(ra=ra_digitado, senha=senha_digitada):
                     print("Acesso concedido.")
+                    from unipresence.aluno import MenuAluno
+
+                    menu_aluno = MenuAluno(self)
+                    menu_aluno.menu_aluno()
                 else:
                     print("Credenciais incorretas.")
             else:
@@ -76,6 +79,10 @@ class Pessoa(ConectarBanco, PessoaInterface):
                 matricula=matricula_digitada, senha=senha_digitada
             ):
                 print("Acesso concedido.")
+                from unipresence.professor import MenuProfessor
+
+                menu_professor = MenuProfessor(self)
+                menu_professor._menu_professor()
             else:
                 print("Credenciais incorretas.")
         else:

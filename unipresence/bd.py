@@ -76,6 +76,3 @@ class LoginProfessor(ConectarBanco):
         finally:
             if conn:
                 conn.close()
-
-
-# -21.966154046977728, -46.77405787532236
