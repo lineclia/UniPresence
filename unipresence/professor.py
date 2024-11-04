@@ -9,12 +9,15 @@ class Professor(Pessoa):
 
 
 class MenuProfessor:
-    def __init__(self, professor: Professor):
+    def __init__(self, professor: Professor, nome_professor):
         self.professor = professor
-        self.menu_professor()
+        self.nome_professor = nome_professor
 
     def menu_professor(self):
-        while True:
+        print(f"Bem-vindo(a), {self.nome_professor}!")
+
+        sair = False
+        while not sair:
             print("\n--- Menu ---")
             print("1. Grade horária")
             print("2. Aula do dia")
@@ -38,7 +41,8 @@ class MenuProfessor:
 
             elif choice == "5":
                 print("Saindo do app...")
-                break
+                sair = True
 
             else:
                 print("Opção inválida. Tente novamente.")
+                return False

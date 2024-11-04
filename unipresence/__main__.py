@@ -1,10 +1,5 @@
-# from unipresence.professor import Professor
-# from unipresence.validacao_geografica import LocalizacaoAluno, DistanciaAutorizada
 from unipresence.aluno import Aluno
 from unipresence.professor import Professor
-# from unipresence.aluno import MenuAluno
-# from unipresence.professor import MenuProfessor
-# from unipresence.interfaces import PessoaInterface
 
 
 # Uso no main
@@ -15,11 +10,11 @@ def main():
 
     if tipo_usuario == "aluno":
         aluno = Aluno()
-        aluno.login()
+        aluno.login(tipo="aluno")
 
     elif tipo_usuario == "professor":
         professor = Professor()
-        professor.login()
+        professor.login(tipo="professor")
 
     else:
         print("tipo de usuário inválido. Por favor, escolha 'aluno' ou 'professor'.")

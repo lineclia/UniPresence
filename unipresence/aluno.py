@@ -8,8 +8,8 @@ from unipresence.validacao_geografica import (
 
 class Aluno(Pessoa):
     def __init__(self):
-        # self._ra = ra
         super().__init__("aluno")
+        # chama o construtor de Pessoa passando "aluno" como parâmetro do tipo de pessoa
 
 
 class ValidarLocal:
@@ -21,12 +21,15 @@ class ValidarLocal:
 
 
 class MenuAluno:
-    def __init__(self, aluno: Aluno):
+    def __init__(self, aluno: Aluno, nome_aluno):
         self.aluno = aluno
-        self.menu_aluno()
+        self.nome_aluno = nome_aluno
 
     def menu_aluno(self):
-        while True:
+        print(f"Bem-vindo(a), {self.nome_aluno}!")
+
+        sair = False
+        while not sair:
             print("\n--- Menu ---")
             print("1. Faltas totais")
             print("2. Grade horária")
@@ -37,19 +40,21 @@ class MenuAluno:
             choice = input("Escolha uma opção: ")
 
             if choice == "1":
-                self.faltas_totais()
+                pass
             elif choice == "2":
-                self.grade_horaria()
+                pass
+                # puxar da tabela aula e mostrar
 
             elif choice == "3":
-                self.atividades_pendentes()
+                pass
 
             elif choice == "4":
-                self.escanear_qr_code
+                pass
 
             elif choice == "5":
-                print("Saindo do app")
-                break
+                print("Saindo do app...")
+                sair = True
 
             else:
                 print("Opção inválida. Tente novamente.")
+                return False
