@@ -1,9 +1,11 @@
 # Classe Aluno, deve solicitar o RA e Senha caso esteja na localização permitida
-from unipresence.pessoa import Pessoa
 from unipresence.validacao_geografica import (
     LocalizacaoAluno,
     DistanciaAutorizada,
 )
+from unipresence.bd import ConexaoBanco
+from mysql.connector import Error
+from unipresence.pessoa import Pessoa
 
 
 class Aluno(Pessoa):
@@ -11,13 +13,48 @@ class Aluno(Pessoa):
         super().__init__("aluno")
         # chama o construtor de Pessoa passando "aluno" como parâmetro do tipo de pessoa
 
+    def get_dados_login(self, ra: int, senha: str):
+        # parametros como metodos de instância
+        conn = ConexaoBanco.get_connection()
+        if not conn:
+            print("Não foi possível conectar ao banco de dados.")
+            return None
+        try:
+            cursor = conn.cursor(dictionary=True)
+            query = "SELECT * FROM aluno WHERE ra = %s AND senha = %s"
+            cursor.execute(query, (ra, senha))
+            aluno = cursor.fetchone()
+            return aluno
+        except Error as e:
+            print(f"Erro ao conectar ao banco de dados: {e}")
+            return None
 
-class ValidarLocal:
-    def __init__(self, localizacao_aluno: LocalizacaoAluno, nome_campus: str):
-        self.distancia = DistanciaAutorizada(localizacao_aluno, nome_campus)
+    def login(self):
+        latitude = float(input("Digite sua latitude: "))
+        longitude = float(input("Digite sua longitude: "))
+        localizacao_aluno = LocalizacaoAluno(latitude, longitude)
+        # pede a localização do aluno para verificar se está em área permitida
 
-    def local_autorizado(self):
-        return self.distancia.local_autorizado()
+        nome_campus = "mantiqueira"  # Ou qualquer campus que você deseja validar
+        validacao = DistanciaAutorizada(localizacao_aluno, nome_campus)
+
+        if validacao.local_autorizado():
+            ra_digitado = int(input("RA: "))
+            senha_digitada = input("Senha: ")
+            aluno = self.get_dados_login(ra=ra_digitado, senha=senha_digitada)
+
+            if aluno:
+                menu_aluno = MenuAluno(self, aluno["nome"])
+                menu_aluno.menu_aluno()
+
+            # if isinstance(aluno, dict):  # verifica se aluno é um dicionário
+            # from unipresence.aluno import MenuAluno
+            else:
+                print("Credenciais incorretas.")
+        else:
+            print(
+                "Não é possível seguir para a página de login, aluno está fora da área de cobertura."
+            )
 
 
 class MenuAluno:
