@@ -5,16 +5,17 @@ import mysql.connector
 from unipresence.validacao_geografica import LocalizacaoAluno, DistanciaAutorizada
 
 # from unipresence.interfaces import PessoaInterface
-from unipresence.bd import ConectarBanco
+from unipresence.bd import ConexaoBanco
 
 
-class Pessoa(ConectarBanco):
+class Pessoa(ConexaoBanco):
     def __init__(self, tipo: str):
         super().__init__()
         self._tipo = tipo
 
     def validacao_dados_login(self, ra=None, matricula=None, senha=None):
-        conn = self.conectar_banco()
+        conn = self.conexao_banco()
+        # método herdado de ConectarBanco, estabelece conxão com o banco
         try:
             cursor = conn.cursor(dictionary=True)
 
@@ -22,7 +23,10 @@ class Pessoa(ConectarBanco):
                 # verifica na tabela aluno com o RA e senha
                 query_aluno = "SELECT * FROM aluno WHERE ra = %s AND senha = %s"
                 cursor.execute(query_aluno, (ra, senha))
+                # executa consulta ao banco de dados
                 aluno = cursor.fetchone()
+                # fetchone obtém o primeiro resultado da consulta, se encontra um aluno já
+                # retorna True
                 return aluno
                 # retorna True se o aluno existir
 
@@ -37,14 +41,16 @@ class Pessoa(ConectarBanco):
 
             return None
         except mysql.connector.Error as err:
+            # tratamento de exceção para retornar err caso ocorra algum erro durante
+            # a consulta no banco de dados
             print(f"Erro: {err}")
             return None
         finally:
             if conn:
                 conn.close()
+                # fecha a conexão com o banco
 
     def login(self, tipo):
-        # tipo_digitado = str(input("Você é um Aluno ou Professor? ")).lower()
         self._tipo = tipo
 
         if tipo == "aluno":
@@ -63,7 +69,6 @@ class Pessoa(ConectarBanco):
                 aluno = self.validacao_dados_login(ra=ra_digitado, senha=senha_digitada)
 
                 if isinstance(aluno, dict):  # verifica se aluno é um dicionário
-                    # print("Acesso concedido.Bem vindo(a), {aluno['aluno']}")
                     from unipresence.aluno import MenuAluno
 
                     menu_aluno = MenuAluno(self, aluno["nome"])

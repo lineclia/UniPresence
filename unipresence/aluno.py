@@ -31,9 +31,9 @@ class MenuAluno:
         sair = False
         while not sair:
             print("\n--- Menu ---")
-            print("1. Faltas totais")
-            print("2. Grade horária")
-            print("3. Atividades Pendentes")
+            print("1. Grade Horária")
+            print("2. Faltas Totais")
+            print("3. Presenças Totais")
             print("4. Escanear QR Code")
             print("5. Sair")
 

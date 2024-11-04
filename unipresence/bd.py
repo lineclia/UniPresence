@@ -1,14 +1,15 @@
+import os
 import mysql.connector
 
 
-class ConectarBanco:
-    def conectar_banco(self):
+class ConexaoBanco:
+    def conexao_banco(self):
         try:
             connection = mysql.connector.connect(
-                host="172.17.0.2",
-                user="root",
-                password="Litha003",
-                database="feob",
+                host=os.getenv("DB_HOST"),
+                user=os.getenv("DB_USER"),
+                password=os.getenv("DB_PASSWORD"),
+                database=os.getenv("DB_DATABASE"),
             )
             if connection.is_connected():
                 print("Conectado ao banco de dados")
@@ -18,7 +19,7 @@ class ConectarBanco:
             return None
 
 
-class LoginAluno(ConectarBanco):
+class LoginAluno(ConexaoBanco):
     def login(self, ra: str, senha: str):
         # chamar o método da classe pai para conectar no banco
         conn = self.conectar_banco()
@@ -31,7 +32,10 @@ class LoginAluno(ConectarBanco):
             cursor = conn.cursor(dictionary=True)
 
             # consulta para verificar o RA e a senha
+
             query_aluno = "SELECT * FROM universidade WHERE ra = %s AND senha = %s"
+            # TODO: atualizar as chamadas diretas na tabela por views
+            # forma SELECT * FROM nome_view WHERE condicao = valor;
             cursor.execute(query_aluno, (ra, senha))
             aluno = cursor.fetchone()
 
@@ -48,7 +52,7 @@ class LoginAluno(ConectarBanco):
                 conn.close()
 
 
-class LoginProfessor(ConectarBanco):
+class LoginProfessor(ConexaoBanco):
     def login(self, matricula: str, senha: str):
         conn = self.conectar_banco()
         try:

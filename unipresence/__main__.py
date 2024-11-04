@@ -19,6 +19,12 @@ def main():
     else:
         print("tipo de usuário inválido. Por favor, escolha 'aluno' ou 'professor'.")
 
+    if tipo_usuario == "aluno":
+        usuario = Aluno()
+    elif tipo_usuario == "professor":
+        usuario = Professor()
+    usuario.login()
+
 
 if __name__ == "__main__":
     main()
