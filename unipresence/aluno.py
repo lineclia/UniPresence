@@ -47,11 +47,9 @@ class Aluno(Pessoa):
             aluno = self.get_dados_login(ra=ra_digitado, senha=senha_digitada)
 
             if aluno:
-                menu_aluno = MenuAluno(self)
+                menu_aluno = MenuAluno(self, aluno["nome"])
                 menu_aluno.menu_aluno()
 
-            # if isinstance(aluno, dict):  # verifica se aluno é um dicionário
-            # from unipresence.aluno import MenuAluno
             else:
                 print("Credenciais incorretas.")
         else:
@@ -61,20 +59,16 @@ class Aluno(Pessoa):
 
 
 class MenuAluno:
-    def __init__(self, aluno: Aluno):
+    def __init__(self, aluno: Aluno, nome_aluno):
         self.aluno = aluno
+        self.nome_aluno = nome_aluno
         self.conn = ConexaoBanco.get_connection()
-        # if not self.conn:
-        #     print("Não foi possível conectar ao banco de dados.")
-        #     self.conn = None
 
     def menu_aluno(self):
         if not self.conn:
             print("Não foi possível conectar ao banco de dados.")
 
-        # cursor = self.conn.cursor()
-
-        print("Bem-vindo(a)!")
+        print(f"Bem-vindo(a), {self.nome_aluno}")
 
         sair = False
         while not sair:
@@ -111,8 +105,7 @@ class MenuAluno:
         if self.conn:
             self.conn.close()
 
-        # Métodos para as funções do Menu
-
+    # Métodos para as funções do Menu
     def exibir_grade_horaria(self):
         if not self.conn:
             print("Conexão com o banco de dados não disponível.")
@@ -140,6 +133,7 @@ class MenuAluno:
                     f"Aluno: {Aluno}, Curso: {Curso}, Disciplina: {Disciplina}, Dia semana: {Dia_da_Semana}",
                     f"Horário Início: {Inicio}, Horário Fim: {Fim}",
                 )
+                # TODO: melhoria na visualização da grade horária
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
