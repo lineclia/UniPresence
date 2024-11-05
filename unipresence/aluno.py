@@ -6,12 +6,14 @@ from unipresence.validacao_geografica import (
 from unipresence.bd import ConexaoBanco
 from mysql.connector import Error
 from unipresence.pessoa import Pessoa
+import geocoder
 
 
 class Aluno(Pessoa):
     def __init__(self):
         super().__init__("aluno")
         self.ra = None
+        self.localizacao = None
         # chama o construtor de Pessoa passando "aluno" como parâmetro do tipo de pessoa
 
     def get_dados_login(self, ra: int, senha: str):
@@ -32,16 +34,19 @@ class Aluno(Pessoa):
             print(f"Erro ao conectar ao banco de dados: {e}")
             return None
 
+    def obtem_localizacao(self):
+        # usando o geocoder para pegar a localização através no IP (para a simulação)
+        g = geocoder.ip("me")
+        if g.ok:
+            self.localizacao = LocalizacaoAluno(g.latlng[0], g.latlng[1])
+        else:
+            print("Não foi possível obter a localizaçao.")
+
     def login(self):
-        latitude = float(input("Digite sua latitude: "))
-        longitude = float(input("Digite sua longitude: "))
-        localizacao_aluno = LocalizacaoAluno(latitude, longitude)
-        # pede a localização do aluno para verificar se está em área permitida
-
+        self.obtem_localizacao()
         nome_campus = "mantiqueira"  # Ou qualquer campus que você deseja validar
-        validacao = DistanciaAutorizada(localizacao_aluno, nome_campus)
-
-        if validacao.local_autorizado():
+        validacao = DistanciaAutorizada(self.localizacao, nome_campus)
+        if validacao:
             ra_digitado = int(input("RA: "))
             senha_digitada = input("Senha: ")
             aluno = self.get_dados_login(ra=ra_digitado, senha=senha_digitada)
@@ -130,7 +135,7 @@ class MenuAluno:
                     Modulo,
                 ) = linha
                 print(
-                    f"Aluno: {Aluno}, Curso: {Curso}, Disciplina: {Disciplina}, Dia semana: {Dia_da_Semana}",
+                    f"Disciplina: {Disciplina}, Dia semana: {Dia_da_Semana}",
                     f"Horário Início: {Inicio}, Horário Fim: {Fim}",
                 )
                 # TODO: melhoria na visualização da grade horária
