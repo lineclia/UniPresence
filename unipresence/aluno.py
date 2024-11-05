@@ -47,7 +47,7 @@ class Aluno(Pessoa):
             aluno = self.get_dados_login(ra=ra_digitado, senha=senha_digitada)
 
             if aluno:
-                menu_aluno = MenuAluno(self, aluno["nome_aluno"])
+                menu_aluno = MenuAluno(self)
                 menu_aluno.menu_aluno()
 
             # if isinstance(aluno, dict):  # verifica se aluno é um dicionário
@@ -61,9 +61,8 @@ class Aluno(Pessoa):
 
 
 class MenuAluno:
-    def __init__(self, aluno: Aluno, nome_aluno):
+    def __init__(self, aluno: Aluno):
         self.aluno = aluno
-        self.nome_aluno = nome_aluno
         self.conn = ConexaoBanco.get_connection()
         # if not self.conn:
         #     print("Não foi possível conectar ao banco de dados.")
@@ -121,24 +120,25 @@ class MenuAluno:
 
         cursor = self.conn.cursor()
         try:
-            view_query = "SELECT * FROM grade_horaria_aluno_semana"
-            cursor.execute(view_query, (self.Aluno))
+            view_query = "SELECT * FROM grade_horaria_aluno_semana WHERE RA = %s"
+            cursor.execute(view_query, (self.aluno.ra,))
             resultados = cursor.fetchall()
 
             # Exibir os resultados
             for linha in resultados:
                 (
                     Aluno,
+                    RA,
                     Curso,
                     Disciplina,
-                    dia_semana,
-                    horario_inicio,
-                    horario_fim,
-                    modulo,
+                    Dia_da_Semana,
+                    Inicio,
+                    Fim,
+                    Modulo,
                 ) = linha
                 print(
-                    f"Aluno: {Aluno}, Curso: {Curso}, Modulo: {modulo}, Disciplina: {Disciplina}, Dia semana: {dia_semana}, "
-                    f"Horário Início: {horario_inicio}, Horário Fim: {horario_fim}"
+                    f"Aluno: {Aluno}, Curso: {Curso}, Disciplina: {Disciplina}, Dia semana: {Dia_da_Semana}",
+                    f"Horário Início: {Inicio}, Horário Fim: {Fim}",
                 )
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
