@@ -5,8 +5,6 @@ from unipresence.validacao_geografica import (
 )
 from unipresence.bd import ConexaoBanco
 from mysql.connector import Error
-
-# from unipresence.pessoa import Pessoa
 import geocoder
 from tabulate import tabulate
 # biblioteca que ajuda na visualização em forma de tabelas
@@ -146,10 +144,7 @@ class MenuAluno:
                     table, headers=["Disciplina", "Dia da Semana", "Início", "Fim"]
                 )
             )
-        # f"Disciplina: {Disciplina}, Dia semana: {Dia_da_Semana}",
-        # f"Horário Início: {Inicio}, Horário Fim: {Fim}",
 
-        # TODO: melhoria na visualização da grade horária
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
@@ -171,11 +166,7 @@ class MenuAluno:
             for linha in resultados:
                 (RA, NomeAluno, Disciplina, TotalPresencas, TotalFaltas) = linha
                 table.append([Disciplina, TotalFaltas])
-            print(
-                tabulate(table, headers=["Disciplina", "Total de Faltas"])
-                # f"Disciplina: {Disciplina}, Total de Faltas: {TotalFaltas} "
-                # Aluno: {NomeAluno},
-            )
+            print(tabulate(table, headers=["Disciplina", "Total de Faltas"]))
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
@@ -197,11 +188,7 @@ class MenuAluno:
             for linha in resultados:
                 (RA, NomeAluno, Disciplina, TotalPresencas, TotalFaltas) = linha
                 table.append([Disciplina, TotalPresencas])
-            print(
-                tabulate(table, headers=["Disciplina", "Total de Presenças"])
-                # f"Disciplina: {Disciplina}, Total de Presenças: {TotalPresencas} "
-                # Aluno: {NomeAluno},
-            )
+            print(tabulate(table, headers=["Disciplina", "Total de Presenças"]))
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
