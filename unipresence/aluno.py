@@ -5,13 +5,17 @@ from unipresence.validacao_geografica import (
 )
 from unipresence.bd import ConexaoBanco
 from mysql.connector import Error
-from unipresence.pessoa import Pessoa
+
+# from unipresence.pessoa import Pessoa
 import geocoder
+from tabulate import tabulate
+# biblioteca que ajuda na visualização em forma de tabelas
 
 
-class Aluno(Pessoa):
-    def __init__(self):
-        super().__init__("aluno")
+class Aluno:
+    def __init__(self, tipo):
+        self.tipo = tipo
+        # super().__init__("aluno")
         self.ra = None
         self.localizacao = None
         # chama o construtor de Pessoa passando "aluno" como parâmetro do tipo de pessoa
@@ -47,6 +51,7 @@ class Aluno(Pessoa):
         nome_campus = "mantiqueira"  # Ou qualquer campus que você deseja validar
         validacao = DistanciaAutorizada(self.localizacao, nome_campus)
         if validacao:
+            # .local_autorizado():
             ra_digitado = int(input("RA: "))
             senha_digitada = input("Senha: ")
             aluno = self.get_dados_login(ra=ra_digitado, senha=senha_digitada)
@@ -122,6 +127,7 @@ class MenuAluno:
             cursor.execute(view_query, (self.aluno.ra,))
             resultados = cursor.fetchall()
 
+            table = []
             # Exibir os resultados
             for linha in resultados:
                 (
@@ -134,11 +140,16 @@ class MenuAluno:
                     Fim,
                     Modulo,
                 ) = linha
-                print(
-                    f"Disciplina: {Disciplina}, Dia semana: {Dia_da_Semana}",
-                    f"Horário Início: {Inicio}, Horário Fim: {Fim}",
+                table.append([Disciplina, Dia_da_Semana, Inicio, Fim])
+            print(
+                tabulate(
+                    table, headers=["Disciplina", "Dia da Semana", "Início", "Fim"]
                 )
-                # TODO: melhoria na visualização da grade horária
+            )
+        # f"Disciplina: {Disciplina}, Dia semana: {Dia_da_Semana}",
+        # f"Horário Início: {Inicio}, Horário Fim: {Fim}",
+
+        # TODO: melhoria na visualização da grade horária
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
@@ -155,13 +166,16 @@ class MenuAluno:
             cursor.execute(view_query, (self.aluno.ra,))
             resultados = cursor.fetchall()
 
+            table = []
             # Exibir os resultados
             for linha in resultados:
                 (RA, NomeAluno, Disciplina, TotalPresencas, TotalFaltas) = linha
-                print(
-                    f"Disciplina: {Disciplina}, Total de Faltas: {TotalFaltas} "
-                    # Aluno: {NomeAluno},
-                )
+                table.append([Disciplina, TotalFaltas])
+            print(
+                tabulate(table, headers=["Disciplina", "Total de Faltas"])
+                # f"Disciplina: {Disciplina}, Total de Faltas: {TotalFaltas} "
+                # Aluno: {NomeAluno},
+            )
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
@@ -178,13 +192,16 @@ class MenuAluno:
             cursor.execute(view_query, (self.aluno.ra,))
             resultados = cursor.fetchall()
 
+            table = []
             # Exibir os resultados
             for linha in resultados:
                 (RA, NomeAluno, Disciplina, TotalPresencas, TotalFaltas) = linha
-                print(
-                    f"Disciplina: {Disciplina}, Total de Presenças: {TotalPresencas} "
-                    # Aluno: {NomeAluno},
-                )
+                table.append([Disciplina, TotalPresencas])
+            print(
+                tabulate(table, headers=["Disciplina", "Total de Presenças"])
+                # f"Disciplina: {Disciplina}, Total de Presenças: {TotalPresencas} "
+                # Aluno: {NomeAluno},
+            )
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:

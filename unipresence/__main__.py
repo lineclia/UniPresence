@@ -12,10 +12,10 @@ def main():
         return
 
     if tipo_usuario == "aluno":
-        usuario = Aluno()
+        usuario = Aluno("aluno")
 
     elif tipo_usuario == "professor":
-        usuario = Professor()
+        usuario = Professor("professor")
 
     usuario.login()
 

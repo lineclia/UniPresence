@@ -1,10 +1,10 @@
-# TODO: acesso professor, acesso aluno, redefinicao de senha
+# TODO: APAGAR PESSOA.PY
 # usar isso pra depois chamar o acesso aluno em aluno.py e  o acesso professor em professor.py
 
-from unipresence.bd import ConexaoBanco
+# from unipresence.bd import ConexaoBanco
 
 
-class Pessoa(ConexaoBanco):
-    def __init__(self, tipo: str):
-        super().__init__()
-        self._tipo = tipo
+# class Pessoa(ConexaoBanco):
+#     def __init__(self, tipo: str):
+#         super().__init__()
+#         self._tipo = tipo

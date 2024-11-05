@@ -7,7 +7,6 @@ class LocalizacaoCampus:
         self.__campus_fazenda_coords = (-21.959124918142102, -46.75541626064883)
         self.__palmeiras_coords = (-21.973273070543343, -46.79749880108253)
 
-    # TODO: alerar os campus para o mesmo do banco de dados, ou seja, Campus Norte e Campus Sul
     def get_campus(self, nome):
         if nome == "mantiqueira":
             return self.__campus_mantiqueira_coords

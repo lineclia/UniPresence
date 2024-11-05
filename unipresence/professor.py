@@ -1,13 +1,15 @@
 # Classe professor, deve solicitar as credenciais (email institucional e senha) e fazer o login
 #
-from unipresence.pessoa import Pessoa
+# from unipresence.pessoa import Pessoa
 from unipresence.bd import ConexaoBanco
 from mysql.connector import Error
+from tabulate import tabulate
 
 
-class Professor(Pessoa):
-    def __init__(self):
-        super().__init__("professor")
+class Professor:
+    def __init__(self, tipo):
+        # super().__init__("professor")
+        self.tipo = tipo
         self.matricula = None
 
     def get_dados_login(self, matricula: int, senha: str):
@@ -94,6 +96,7 @@ class MenuProfessor:
             cursor.execute(view_query, (self.professor.matricula,))
             resultados = cursor.fetchall()
 
+            table = []
             # Exibir os resultados
             for linha in resultados:
                 (
@@ -107,9 +110,12 @@ class MenuProfessor:
                     Modulo,
                     Periodo,
                 ) = linha
-                print(
-                    f"Dia da semana: {Dia_da_Semana}, Disciplina: {Disciplina}, Horário de início: {Inicio}, Horário Fim: {Fim}"
+                table.append([Dia_da_Semana, Disciplina, Inicio, Fim])
+            print(
+                tabulate(
+                    table, headers=["Dia da Semana", "Disciplina", "Início", "Fim"]
                 )
+            )
 
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
@@ -129,6 +135,7 @@ class MenuProfessor:
             cursor.execute(view_query, (self.professor.matricula,))
             resultados = cursor.fetchall()
 
+            table = []
             # Exibir os resultados
             for linha in resultados:
                 (
@@ -142,7 +149,8 @@ class MenuProfessor:
                     Modulo,
                     Periodo,
                 ) = linha
-                print(f"Dia da semana: {Dia_da_Semana}, Disciplina: {Disciplina}")
+                table.append([Dia_da_Semana, Disciplina])
+                print(tabulate(table, headers=["Dia da semana", "Disciplina"]))
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
@@ -161,11 +169,16 @@ class MenuProfessor:
             cursor.execute(query)
             resultados = cursor.fetchall()
             print("Resumo por Disciplina:")
+            table = []
             for linha in resultados:
                 disciplina, total_presencas, total_faltas = linha
-                print(
-                    f"Disciplina: {disciplina}, Total de Presenças: {total_presencas}, Total de Faltas: {total_faltas}"
+                table.append([disciplina, total_presencas, total_faltas])
+            print(
+                tabulate(
+                    table,
+                    headers=["Disciplina", "Total de Presenças", "Total de Faltas"],
                 )
+            )
         except Exception as e:
             print(f"Ocorreu um erro ao consultar o banco de dados: {e}")
         finally:
