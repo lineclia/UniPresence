@@ -9,7 +9,7 @@ class ConexaoBanco:
     @classmethod
     def get_connection(cls):
         """Obtem a conexão com o bd, criando-a se necessário"""
-        if cls._connection is None or not cls.connection.is_connected():
+        if cls._connection is None or not cls._connection.is_connected():
             try:
                 cls._connection = mysql.connector.connect(
                     host=os.getenv("DB_HOST"),
