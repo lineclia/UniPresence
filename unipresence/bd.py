@@ -26,6 +26,15 @@ class ConexaoBanco:
         return cls._connection
 
     @classmethod
+    def get_cursor(cls):
+        conn = cls.get_connection()
+        if conn:
+            return conn.cursor(dictionary=True)
+        else:
+            print("Falha ao obter o cursor, conexão indisponível.")
+            return None
+
+    @classmethod
     def close_connection(cls):
         """Fecha a conexão com o banco caso esteja aberta"""
         if cls._connection and cls._connection.is_connected():
