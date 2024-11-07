@@ -54,7 +54,7 @@ class Menu:
             for linha in resultados:
                 (
                     Professor,
-                    Matrícula,  # ALTERAR PARA O NOME CORRETO QUE ESTIVER NO BANCO, O MEU TA EM INGLES POR ISSO MATRCULA
+                    Matrícula,
                     Curso,
                     Disciplina,
                     Dia_da_Semana,
@@ -180,7 +180,7 @@ class MenuProfessor(Menu):
         for linha in resultados:
             (
                 Professor,
-                Matrícula,  # ALTERAR PARA O NOME CORRETO QUE ESTIVER NO BANCO, O MEU TA EM INGLES POR ISSO MATRCULA
+                Matrícula,
                 Curso,
                 Disciplina,
                 Dia_da_Semana,
