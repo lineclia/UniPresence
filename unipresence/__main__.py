@@ -30,12 +30,6 @@ def main():
             if opcao == "5":
                 break
 
-        # while True:
-        #     menu.menu_layout()
-        #     opcao = input("Escolha uma opção: ")
-        #     menu.executar_opcao(opcao)
-        #     if opcao == "5":
-        #         break
     else:
         print(f"Falha no login como {tipo_usuario.capitalize()}")
 
