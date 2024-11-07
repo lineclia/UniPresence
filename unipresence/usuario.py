@@ -14,7 +14,9 @@ class Usuario:
             self.id = input("Digite seu RA: ").strip()
         else:
             self.id = input("Digite sua matrícula(RM): ").strip()
+
         self.senha = input("Digite sua senha: ")
+
         return self._verificar_credenciais()
 
     def _verificar_credenciais(self):

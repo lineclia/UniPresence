@@ -1,6 +1,13 @@
 from unipresence.bd import ConexaoBanco
 from tabulate import tabulate
 
+# from unipresence.aluno import Aluno
+from unipresence.validacao_geografica import (
+    LocalizacaoAluno,
+    DistanciaAutorizada,
+    # LocalizacaoCampus,
+)
+
 
 class Menu:
     def __init__(self, usuario):
@@ -119,7 +126,16 @@ class MenuAluno(Menu):
         print(tabulate(table, headers=["Disciplina", "Total de Presenças"]))
 
     def escanear_qr_code(self):
-        pass
+        campus_nome = input(
+            "Digite o nome do campus que está tendo aulas (mantiqueira, fazenda, palmeiras): "
+        )
+        # Definindo coordenadas fictícias do aluno
+        coordenadas_aluno = LocalizacaoAluno(-21.96614140503053, -46.77420297206084)
+        validacao = DistanciaAutorizada(coordenadas_aluno, campus_nome)
+        if validacao.local_autorizado():
+            print("Localização válida para escanear o QR code!")
+        else:
+            print("Você não está dentro da área permitida. Não pode gerar o QR Code")
 
 
 class MenuProfessor(Menu):

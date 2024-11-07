@@ -1,5 +1,7 @@
 from unipresence.usuario import Usuario
 from unipresence.menu import MenuAluno, MenuProfessor
+from unipresence.aluno import Aluno
+from unipresence.professor import Professor
 
 
 # # Uso no main
@@ -15,16 +17,25 @@ def main():
 
     if usuario.login():
         if tipo_usuario == "aluno":
+            usuario = Aluno()
             menu = MenuAluno(usuario)
-        else:
+        elif tipo_usuario == "professor":
+            usuario = Professor()
             menu = MenuProfessor(usuario)
 
         while True:
             menu.menu_layout()
-            opcao = input("Escolha uma opção: ")
+            opcao = input("escolha uma opção: ")
             menu.executar_opcao(opcao)
             if opcao == "5":
                 break
+
+        # while True:
+        #     menu.menu_layout()
+        #     opcao = input("Escolha uma opção: ")
+        #     menu.executar_opcao(opcao)
+        #     if opcao == "5":
+        #         break
     else:
         print(f"Falha no login como {tipo_usuario.capitalize()}")
 
