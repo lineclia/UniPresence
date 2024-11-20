@@ -1,4 +1,4 @@
-from unipresence.bd import ConexaoBanco
+from bd import ConexaoBanco
 from mysql.connector import Error
 
 

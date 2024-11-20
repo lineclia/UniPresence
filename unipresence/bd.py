@@ -1,8 +1,9 @@
+from dotenv import load_dotenv
 import os
 import mysql.connector
 from mysql.connector import Error
 
-
+load_dotenv()
 class ConexaoBanco:
     _connection = None
 
@@ -18,7 +19,7 @@ class ConexaoBanco:
                     database=os.getenv("DB_DATABASE"),
                 )
                 if cls._connection.is_connected():
-                    print("Conectado ao banco de dados")
+                    print(f"Conectado ao banco de dados '{os.getenv('DB_DATABASE')}'")
 
             except Error as e:
                 print(f"Erro ao conectar ao banco de dados: {e}")

@@ -1,8 +1,8 @@
-from unipresence.bd import ConexaoBanco
+from bd import ConexaoBanco
 from tabulate import tabulate
 
-# from unipresence.aluno import Aluno
-from unipresence.validacao_geografica import (
+# from aluno import Aluno
+from validacao_geografica import (
     LocalizacaoAluno,
     DistanciaAutorizada,
     # LocalizacaoCampus,
@@ -14,56 +14,76 @@ class Menu:
         self.usuario = usuario
         self.conn = ConexaoBanco.get_connection()
         if self.conn:
-            self.cursor = self.conn.cursor()
+            self.cursor = self.conn.cursor(dictionary = True)
 
     def exibe_grade_horaria(self):
-        if self.usuario.tipo == "aluno":
-            view_query = "SELECT * FROM grade_horaria_aluno_semana WHERE RA = %s"
-            self.cursor.execute(view_query, (self.usuario.id,))
-            resultados = self.cursor.fetchall()
+        # print(f"RA fornecido: {self.usuario.id}")
+        print(f"Tipo de usuario: {self.usuario.tipo}")
+        query = None
 
-            table = []
+        if self.usuario.tipo == "aluno":
+            query = "SELECT * FROM grade_horaria_aluno_semana WHERE RA = %s"
+            self.cursor.execute(query, (self.usuario.id,))  # Substituir pelo RA do aluno
+        #resultados = self.cursor.fetchall()
+        elif self.usuario.tipo == "professor":
+            query = "SELECT * FROM grade_horaria_professor_semana WHERE Matrícula = %s"
+            self.cursor.execute(query, (self.usuario.id,))  # Substituir pela matricula do professor
+
+
+        resultados = self.cursor.fetchall()
+       # print("Resultados da query:", resultados)
+
+       # if self.usuario.tipo == "aluno":
+        #    view_query = "SELECT * FROM grade_horaria_aluno_semana WHERE RA = %s"
+         #   self.cursor.execute(view_query, (self.usuario.id,))
+          #  resultados = self.cursor.fetchall()
+
+        if not resultados:
+            print("Nenhuma grade horária encontrada para o RA fornecido.")
+            return
+
+        table = []
             # Exibir os resultados
+        if self.usuario.tipo == "aluno":
             for linha in resultados:
-                (
-                    Aluno,
-                    RA,
-                    Curso,
-                    Disciplina,
-                    Dia_da_Semana,
-                    Inicio,
-                    Fim,
-                    Modulo,
-                ) = linha
-                table.append([Disciplina, Dia_da_Semana, Inicio, Fim])
+               # aluno = linha["Aluno"]
+                #ra = linha["RA"]
+                #curso = linha["Curso"]
+                disciplina = linha["Disciplina"]
+                dia_da_semana = linha.get("Dia da Semana", "N/A")
+                inicio = linha["Início"]
+                fim = linha["Fim"]
+            #    modulo = linha["Módulo"]    
+                table.append([disciplina, dia_da_semana, inicio, fim])
             print(
                 tabulate(
-                    table, headers=["Disciplina", "Dia da Semana", "Início", "Fim"]
+                    table,  # A lista contendo os dados
+                    headers=["Disciplina", "Dia da Semana", "Início", "Fim"],  # Cabeçalhos das colunas
+                    tablefmt="grid",  # Formato da tabela (pode usar "plain", "grid", etc.)
                 )
             )
-
         elif self.usuario.tipo == "professor":
-            view_query = (
-                "SELECT * FROM grade_horaria_professor_semana WHERE Matrícula = %s"
-            )
-            self.cursor.execute(view_query, (self.usuario.id,))
-            resultados = self.cursor.fetchall()
+            #view_query = (
+             #   "SELECT * FROM grade_horaria_professor_semana WHERE Matrícula = %s"
+            #)
+            #self.cursor.execute(view_query, (self.usuario.id,))
+            #resultados = self.cursor.fetchall()
 
-            table = []
+            #table = []
             # Exibir os resultados
             for linha in resultados:
-                (
-                    Professor,
-                    Matrícula,
-                    Curso,
-                    Disciplina,
-                    Dia_da_Semana,
-                    Inicio,
-                    Fim,
-                    Modulo,
-                    Periodo,
-                ) = linha
-                table.append([Dia_da_Semana, Disciplina, Inicio, Fim])
+                
+                #professor = linha["Professor"]
+                #matricula = linha["Matrícula"]
+                #curso = linha["Curso"]
+                disciplina = linha.get("Disciplina", "N/A")  # Usando o valor padrão "N/A" se "Disciplina" for None"Disciplina"]
+                dia_da_semana = linha.get("Dia da Semana", "N/A")
+                inicio = linha.get("Início", "N/A")
+                fim = linha.get("Fim", "N/A")
+                #modulo = linha["Modulo"]
+                #periodo = linha["Periodo"]
+                
+                table.append([dia_da_semana, disciplina, inicio, fim])
             print(
                 tabulate(
                     table, headers=["Dia da Semana", "Disciplina", "Início", "Fim"]
@@ -102,27 +122,34 @@ class MenuAluno(Menu):
             print("Opção inválida.")
 
     def exibe_faltas_totais(self):
-        view_query = "SELECT * FROM historico_presenca_aluno WHERE RA = %s"
-        self.cursor.execute(view_query, (self.usuario.id,))
+        query = "SELECT Disciplina, `Total Faltas` FROM historico_presenca_aluno WHERE RA = %s"
+        self.cursor.execute(query, (self.usuario.id,))
         resultados = self.cursor.fetchall()
+
+        if not resultados:
+            print(f"Nenhuma falta registrada para o RA:{self.usuario.id}")
+            return
 
         table = []
         # Exibir os resultados
         for linha in resultados:
-            (RA, NomeAluno, Disciplina, TotalPresencas, TotalFaltas) = linha
-            table.append([Disciplina, TotalFaltas])
+            disciplina = linha.get("Disciplina", "N/A")
+            total_faltas = linha.get("Total Faltas", "N/A")
+            table.append([disciplina, total_faltas])
         print(tabulate(table, headers=["Disciplina", "Total de Faltas"]))
 
     def exibe_presencas_totais(self):
-        view_query = "SELECT * FROM historico_presenca_aluno WHERE RA = %s"
+        view_query = "SELECT Disciplina, `Total Presencas` FROM historico_presenca_aluno WHERE RA = %s"
         self.cursor.execute(view_query, (self.usuario.id,))
         resultados = self.cursor.fetchall()
 
         table = []
         # Exibir os resultados
         for linha in resultados:
-            (RA, NomeAluno, Disciplina, TotalPresencas, TotalFaltas) = linha
-            table.append([Disciplina, TotalPresencas])
+            disciplina = linha.get("Disciplina", "N/A")
+            total_presencas = linha.get("Total Presencas", "N/A")
+            table.append([disciplina, total_presencas])
+            
         print(tabulate(table, headers=["Disciplina", "Total de Presenças"]))
 
     def escanear_qr_code(self):
@@ -171,25 +198,17 @@ class MenuProfessor(Menu):
             self.sair()
 
     def exibir_aula_dia(self):
-        view_query = "SELECT * FROM grade_horaria_professor_semana WHERE Matrícula = %s"
-        self.cursor.execute(view_query, (self.usuario.id,))
+        query = "SELECT `Dia da Semana`, Disciplina FROM grade_horaria_professor_semana WHERE Matrícula = %s"
+        self.cursor.execute(query, (self.usuario.id,))
         resultados = self.cursor.fetchall()
 
         table = []
         # Exibir os resultados
         for linha in resultados:
-            (
-                Professor,
-                Matrícula,
-                Curso,
-                Disciplina,
-                Dia_da_Semana,
-                Inicio,
-                Fim,
-                Modulo,
-                Periodo,
-            ) = linha
-            table.append([Dia_da_Semana, Disciplina])
+            disciplina = linha.get("Disciplina", "N/A")
+            dia_da_semana = linha.get("Dia da Semana", "N/A")
+           
+            table.append([dia_da_semana, disciplina])
             print(tabulate(table, headers=["Dia da semana", "Disciplina"]))
 
     def relatorio(self):
@@ -201,7 +220,9 @@ class MenuProfessor(Menu):
         print("Resumo por Disciplina:")
         table = []
         for linha in resultados:
-            disciplina, total_presencas, total_faltas = linha
+            disciplina = linha.get("Disciplina", "N/A")
+            total_presencas = linha.get("TotalPresencas", "N/A")
+            total_faltas = linha.get("TotalFaltas", "N/A")
             table.append([disciplina, total_presencas, total_faltas])
         print(
             tabulate(

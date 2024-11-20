@@ -1,7 +1,7 @@
-from unipresence.usuario import Usuario
-from unipresence.menu import MenuAluno, MenuProfessor
-from unipresence.aluno import Aluno
-from unipresence.professor import Professor
+from usuario import Usuario
+from menu import MenuAluno, MenuProfessor
+from aluno import Aluno
+from professor import Professor
 
 
 # # Uso no main
@@ -17,10 +17,14 @@ def main():
 
     if usuario.login():
         if tipo_usuario == "aluno":
-            usuario = Aluno()
+            aluno = Aluno()
+            aluno.id = usuario.id
+            aluno.senha = usuario.senha
             menu = MenuAluno(usuario)
         elif tipo_usuario == "professor":
-            usuario = Professor()
+            professor = Professor()
+            professor.id = usuario.id
+            professor.senha = usuario.senha
             menu = MenuProfessor(usuario)
 
         while True:
