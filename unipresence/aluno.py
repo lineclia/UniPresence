@@ -1,4 +1,4 @@
-from unipresence.usuario import Usuario
+from usuario import Usuario
 
 
 class Aluno(Usuario):

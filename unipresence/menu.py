@@ -1,8 +1,8 @@
-from unipresence.bd import ConexaoBanco
+from bd import ConexaoBanco
 from tabulate import tabulate
 
-# from unipresence.aluno import Aluno
-from unipresence.validacao_geografica import (
+# from aluno import Aluno
+from validacao_geografica import (
     LocalizacaoAluno,
     DistanciaAutorizada,
     # LocalizacaoCampus,

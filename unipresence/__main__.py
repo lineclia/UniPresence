@@ -1,7 +1,7 @@
-from unipresence.usuario import Usuario
-from unipresence.menu import MenuAluno, MenuProfessor
-from unipresence.aluno import Aluno
-from unipresence.professor import Professor
+from usuario import Usuario
+from menu import MenuAluno, MenuProfessor
+from aluno import Aluno
+from professor import Professor
 
 
 # # Uso no main
