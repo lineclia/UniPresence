@@ -17,10 +17,14 @@ def main():
 
     if usuario.login():
         if tipo_usuario == "aluno":
-            usuario = Aluno()
+            aluno = Aluno()
+            aluno.id = usuario.id
+            aluno.senha = usuario.senha
             menu = MenuAluno(usuario)
         elif tipo_usuario == "professor":
-            usuario = Professor()
+            professor = Professor()
+            professor.id = usuario.id
+            professor.senha = usuario.senha
             menu = MenuProfessor(usuario)
 
         while True:
